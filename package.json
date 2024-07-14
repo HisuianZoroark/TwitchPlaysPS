@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/HisuianZoroark/TwitchPlaysPS/issues"
   },
-  "homepage": "https://github.com/HisuianZoroark/TwitchPlaysPS#readme"
+  "homepage": "https://github.com/HisuianZoroark/TwitchPlaysPS#readme",
+  "dependencies": {
+    "ps-client": "^3.6.0",
+    "tmi.js": "^1.8.5"
+  }
 }
