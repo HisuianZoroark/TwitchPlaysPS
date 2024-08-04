@@ -1,11 +1,13 @@
 const Tmi = require('tmi.js');
 const WebSocket = require('ws');
+const ReconnectingWebSocket = require('websocket-reconnect');
 const fs = require('fs');
 const fetch = require('node-fetch');
 global.Config = require('./config/config.js');
 
 // Connect to PS!
-const PSClient = new WebSocket('wss://sim3.psim.us/showdown/websocket');
+const PS = new ReconnectingWebSocket.WsReconnect({ reconnectDelay: 5000 });
+PS.open('wss://sim3.psim.us/showdown/websocket');
 
 
 // Connect to Twitch
@@ -26,11 +28,11 @@ Twitch.on('message', (channel, tags, message, self) => {
 	}
 });
 
-PSClient.on('open', function open(connection) {
+PS.on('open', function open(connection) {
 	console.log('Connected to PS!');
 });
 
-PSClient.on('message', function message(data) {
+PS.on('message', function message(data) {
 	const bits = data.toString().split('|');
 	if (bits[1] === 'challstr') {
 		// console.log('received: %s', bits);
@@ -58,8 +60,8 @@ async function PSlogin(bits) {
 		let data = await response.text();
 		if (data.charAt(0) === ']') {
 			data = JSON.parse(data.substring(1));
-			PSClient.send(`|/trn ${Config.Showdown.username},0,${data.assertion}`);
-			PSClient.send(`|/avatar ${Config.Showdown.avatar}`);
+			PS.send(`|/trn ${Config.Showdown.username},0,${data.assertion}`);
+			PS.send(`|/avatar ${Config.Showdown.avatar}`);
 			console.log(`Logged into PS! Username: ${Config.Showdown.username}`);
 		} else {
 			console.log(`There might be an error with the account you're trying to access, please try again.`);

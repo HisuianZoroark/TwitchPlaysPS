@@ -20,6 +20,7 @@
     "fs": "^0.0.1-security",
     "node-fetch": "^2.6.1",
     "tmi.js": "^1.8.5",
+    "websocket-reconnect": "^1.0.10",
     "ws": "^8.18.0"
   }
 }
