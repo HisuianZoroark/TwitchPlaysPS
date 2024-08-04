@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/HisuianZoroark/TwitchPlaysPS#readme",
   "dependencies": {
-    "ps-client": "^3.6.0",
-    "tmi.js": "^1.8.5"
+    "fs": "^0.0.1-security",
+    "node-fetch": "^2.6.1",
+    "tmi.js": "^1.8.5",
+    "ws": "^8.18.0"
   }
 }
