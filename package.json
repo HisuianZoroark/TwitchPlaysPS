@@ -1,7 +1,7 @@
 {
   "name": "twitchplaysps",
   "version": "0.0.1",
-  "description": "Pokemon Showdown Twitch Interface",
+  "description": "Twitch application for Pokemon Showdown",
   "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,17 +10,14 @@
     "type": "git",
     "url": "git+https://github.com/HisuianZoroark/TwitchPlaysPS.git"
   },
-  "author": "HiZo",
+  "author": "Hisuian Zoroark a.k.a. HiZo",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/HisuianZoroark/TwitchPlaysPS/issues"
   },
   "homepage": "https://github.com/HisuianZoroark/TwitchPlaysPS#readme",
   "dependencies": {
-    "fs": "^0.0.1-security",
-    "node-fetch": "^2.6.1",
-    "tmi.js": "^1.8.5",
-    "websocket-reconnect": "^1.0.10",
-    "ws": "^8.18.0"
+    "ps-client": "^3.6.0",
+    "tmi.js": "^1.8.5"
   }
 }
