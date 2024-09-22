@@ -15,6 +15,7 @@ Ps.connect();
 
 Ps.on('message', message => {
 	if (message.isIntro) return;
+	if (message.content === '/challenge gen9randombattle@@@TEAMPREVIEW|gen9randombattle@@@TEAMPREVIEW|||') return message.reply('/accept');
 	// console.log(message.content);
 });
 Ps.on('request', (room, request, isIntro) => {
