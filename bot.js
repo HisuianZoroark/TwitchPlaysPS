@@ -13,6 +13,15 @@ const Ps = new PSClient.Client({
 
 Ps.connect();
 
+Ps.on('message', message => {
+	if (message.isIntro) return;
+	// console.log(message.content);
+});
+Ps.on('request', (room, request, isIntro) => {
+	console.log(request);
+	console.log(JSON.parse(request));
+});
+
 // Connect to Twitch
 const Twitch = new Tmi.Client({
 	options: {debug: true},
@@ -26,6 +35,8 @@ Twitch.connect();
 
 Twitch.on('message', (channel, tags, message, self) => {
 	if (self) return;
+	if (!message.startsWith(Config.Twitch.prefix)) return;
+	const author = tags.username;
 	if (message.toLowerCase() === '!hello') {
 		Twitch.say(channel, `@${tags.username}, heya!`);
 	}
