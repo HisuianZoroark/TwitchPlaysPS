@@ -1,4 +1,4 @@
-export class Battle {
+ class Battle {
 	room;
 	tally;
 	votecmds;
@@ -10,11 +10,11 @@ export class Battle {
 		this.acceptingVotes = false;
 		this.timeout = 60;
 	}
-	function genOptions(requestState) {
+	genOptions(requestState) {
 		this.votecmds = {};
 		let request = JSON.parse(requestState);
 		if (request.active && !request.forceSwitch) {
-			for (x = 0; x < request.active.moves.length; x++) {
+			for (let x = 0; x < request.active.moves.length; x++) {
 				this.votecmds[`move ${x + 1}`] = `/move ${x}`;
 				this.votecmds[`move ${request.active.moves[x].move}`] = `/move ${x}`;
 				if (request.active.canTerrastallize) {
@@ -26,19 +26,25 @@ export class Battle {
 		if (!request.active || !request.active.trapped) {
 			let keyword = 'switch';
 			if (request.teamPreview) keyword = 'choose';
-			for (x = 0; x < request.side.pokemon.length; x++) {
+			for (let x = 0; x < request.side.pokemon.length; x++) {
 				if (request.active && !request.teamPreview) continue;
 				this.votecmds[`switch ${x + 1}`] = `/${keyword} ${x}`;
 				// this.votecmds[`switch ${request.active.moves[x].move}`] = `/${keyword} ${x}`;
 			}
 		}
 	}
-	function startVote() {
+	endVote() {
+		this.acceptingVotes = false;
+		let votes = Object.values(this.tally);
+		let winner = this.findWinner(votes);
+		PS.say(winner, this.room);
+	}
+	startVote() {
 		this.acceptingVotes = true;
 		this.tally = {};
-		return new Promise(resolve => setTimeout(endVote(), this.timeout * 1000));
+		return new Promise(resolve => setTimeout(this.endVote(), this.timeout * 1000));
 	}
-	async function submitVote(username, vote) {
+	async submitVote(username, vote) {
 		let sanitizedvote = vote.toLowerCase().trim();
 		let realvote = this.votecmds[sanitizedvote] || null;
 		if (!realvote || !this.acceptingVotes) {
@@ -47,12 +53,7 @@ export class Battle {
 		}
 		this.tally[username] = realvote;
 	}
-	function endVote() {
-		this.acceptingVotes = false;
-		let votes = Object.values(this.tally);
-		findWinner(votes);
-	}
-	async function findWinner(arr) {
+	async findWinner(arr) {
 		const count = {};
 
 		// Count occurrences of each value
@@ -74,3 +75,4 @@ export class Battle {
 		return mostFrequentValue;
 	}
 }
+module.exports = Battle;

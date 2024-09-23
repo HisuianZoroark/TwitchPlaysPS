@@ -2,6 +2,10 @@
 const Tmi = require('tmi.js');
 const PSClient = require('ps-client');
 global.Config = require('./config/config.js');
+const Battle = require('./battle.js');
+
+let session = new Battle(null);
+let inBattle = false;
 
 // Connect to PS!
 const Ps = new PSClient.Client({
@@ -19,8 +23,13 @@ Ps.on('message', message => {
 	// console.log(message.content);
 });
 Ps.on('request', (room, request, isIntro) => {
-	console.log(request);
-	console.log(JSON.parse(request));
+	if (!request.length) {
+		session = new Battle(room);
+		inBattle = true;
+	} else {
+		session.genOptions(request);
+		session.startVote();
+	}
 });
 
 // Connect to Twitch
@@ -38,7 +47,9 @@ Twitch.on('message', (channel, tags, message, self) => {
 	if (self) return;
 	if (!message.startsWith(Config.Twitch.prefix)) return;
 	const author = tags.username;
-	if (message.toLowerCase() === '!hello') {
-		Twitch.say(channel, `@${tags.username}, heya!`);
+	if (message.toLowerCase() === '!vote') {
+		if (inBattle === false) return;
+		let vote = message.toLowerCase().substring(5).trim();
+		session.submitVote(author, vote);
 	}
 });
