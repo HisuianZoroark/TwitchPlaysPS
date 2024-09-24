@@ -24,12 +24,14 @@ Ps.on('message', message => {
 	// console.log(message.content);
 });
 Ps.on('request', (room, request, isIntro) => {
-	if (!request.length || !session) {
+	if (!session) {
 		session = new Battle(room);
 		inBattle = true;
 	}
-	session.genOptions(request);
-	session.startVote();
+	if (request.length) {
+		session.genOptions(request);
+		session.startVote();
+	}
 });
 
 // Connect to Twitch
@@ -48,7 +50,7 @@ Twitch.on('message', (channel, tags, message, self) => {
 	console.log(channel);
 	if (!message.startsWith(Config.Twitch.prefix)) return;
 	const author = tags.username;
-	if (message.toLowerCase() === '!vote') {
+	if (message.toLowerCase().startsWith(Config.Twitch.prefix + 'vote')) {
 		if (inBattle === false || !session) return;
 		let vote = message.toLowerCase().substring(5).trim();
 		session.submitVote(author, vote);
