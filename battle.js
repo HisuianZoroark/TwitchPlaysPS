@@ -1,14 +1,14 @@
- class Battle {
+class Battle {
 	room;
 	tally;
 	votecmds;
 	acceptingVotes;
 	constructor(room) {
 		this.room = room;
-		this.tally = {};
+		this.tally = new Map();
 		this.votecmds = {};
 		this.acceptingVotes = false;
-		this.timeout = 60;
+		this.timeout = 10;
 	}
 	genOptions(requestState) {
 		this.votecmds = {};
@@ -33,46 +33,30 @@
 			}
 		}
 	}
+	startVote() {
+		this.tally.clear();
+		this.acceptingVotes = true;
+		return new Promise(resolve => setTimeout(() => this.endVote(), this.timeout * 1000));
+	}
 	endVote() {
 		this.acceptingVotes = false;
-		let votes = Object.values(this.tally);
+		let votes = this.tally.values();
+		console.log(votes);
 		let winner = this.findWinner(votes);
-		PS.say(winner, this.room);
-	}
-	startVote() {
-		this.acceptingVotes = true;
-		this.tally = {};
-		return new Promise(resolve => setTimeout(this.endVote(), this.timeout * 1000));
+		if (!winner) {
+			winner = 'no winner';
+		}
+		console.log(winner);
+		makeDecision(winner, this.room);
 	}
 	async submitVote(username, vote) {
 		let sanitizedvote = vote.toLowerCase().trim();
 		let realvote = this.votecmds[sanitizedvote] || null;
 		if (!realvote || !this.acceptingVotes) {
-			Twitch.say(channel, `@${username} your vote was not accepted.`);
+			twitchChat(`@${username} your vote was not accepted.`);
 			return;
 		}
-		this.tally[username] = realvote;
-	}
-	async findWinner(arr) {
-		const count = {};
-
-		// Count occurrences of each value
-		arr.forEach(value => {
-			count[value] = (count[value] || 0) + 1;
-		});
-
-		let maxCount = 0;
-		let mostFrequentValue = null;
-
-		// Find the value with the most duplicates
-		for (const [key, value] of Object.entries(count)) {
-			if (value > maxCount) {
-				maxCount = value;
-				mostFrequentValue = key;
-			}
-		}
-
-		return mostFrequentValue;
+		this.tally.set(username, realvote);
 	}
 }
 module.exports = Battle;
