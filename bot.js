@@ -62,6 +62,7 @@ Twitch.on('message', (channel, tags, message, self) => {
 	let args = message.slice(1).split(' ');
 	let command = args.shift().toLowerCase();
 	let content = args.join(' ');
+	let isAdmin = [Config.Twitch.streamer].concat(Config.Twitch.sysops).includes(author);
 	switch (command) {
 		case 'v':
 		case 'vote':
@@ -80,7 +81,7 @@ Twitch.on('message', (channel, tags, message, self) => {
 			laddering = false;
 			break;
 		case 'kill':
-			process.exit();
+			if (isAdmin) process.exit();
 			break;
 		default:
 			twitchChat(`${author} that command does not exist.`);
