@@ -5,7 +5,7 @@ global.Config = require('./config/config.js');
 const Battle = require('./battle.js');
 
 let session;
-let laddering;
+let laddering = false;
 let inBattle = false;
 
 // Connect to PS!
@@ -40,6 +40,8 @@ Ps.on('win', (room, request, isIntro) => {
 	// Ps.rooms.get(room).send('/part');
 	if (laddering) {
 
+	} else {
+
 	}
 });
 
@@ -60,14 +62,28 @@ Twitch.on('message', (channel, tags, message, self) => {
 	let args = message.slice(1).split(' ');
 	let command = args.shift().toLowerCase();
 	let content = args.join(' ');
-	if (command === 'vote') {
-		if (inBattle === false || !session) {
-			twitchChat(`${author} we aren't in a battle yet!`);
-			return;
-		}
-		session.submitVote(author, content);
-	} else if (message.toLowerCase().startsWith(Config.Twitch.prefix + 'startladder')) {
-
+	switch (command) {
+		case 'v':
+		case 'vote':
+			if (inBattle === false || !session) {
+				twitchChat(`${author} we aren't in a battle yet!`);
+				return;
+			}
+			session.submitVote(author, content);
+			break;
+		case 'start':
+		case 'startladder':
+			//code
+			break;
+		case 'end':
+		case 'endladder':
+			laddering = false;
+			break;
+		case 'kill':
+			process.exit();
+			break;
+		default:
+			twitchChat(`${author} that command does not exist.`);
 	}
 });
 
