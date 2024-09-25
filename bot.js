@@ -74,17 +74,34 @@ Twitch.on('message', (channel, tags, message, self) => {
 			break;
 		case 'start':
 		case 'startladder':
-			//code
+			if (!isAdmin) {
+				twitchChat(`Access denied.`);
+				return;
+			} else if (laddering) {
+				twitchChat(`We're already in a ladder session.`);
+				return;
+			}
+			laddering = true;
+			args = content.split(',').forEach((i, e) => args[e] = i.trim());
+
 			break;
 		case 'end':
 		case 'endladder':
+			if (!isAdmin) {
+				twitchChat(`Access denied.`);
+				return;
+			}
 			laddering = false;
 			break;
 		case 'kill':
-			if (isAdmin) process.exit();
+			if (!isAdmin) {
+				twitchChat(`Access denied.`);
+				return;
+			}
+			process.exit();
 			break;
 		default:
-			twitchChat(`${author} that command does not exist.`);
+			twitchChat(`That command does not exist.`);
 	}
 });
 
