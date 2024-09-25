@@ -46,14 +46,19 @@ const Twitch = new Tmi.Client({
 Twitch.connect();
 
 Twitch.on('message', (channel, tags, message, self) => {
-	if (self) return;
-	console.log(channel);
-	if (!message.startsWith(Config.Twitch.prefix)) return;
+	if (self || !message.startsWith(Config.Twitch.prefix)) return;
 	const author = tags.username;
-	if (message.toLowerCase().startsWith(Config.Twitch.prefix + 'vote')) {
-		if (inBattle === false || !session) return;
-		let vote = message.toLowerCase().substring(5).trim();
-		session.submitVote(author, vote);
+	let args = message.slice(1).split(' ');
+	let command = args.shift().toLowerCase();
+	let content = args.join(' ');
+	if (command === 'vote') {
+		if (inBattle === false || !session) {
+			twitchChat(`${author} we aren't in a battle yet!`);
+			return;
+		}
+		session.submitVote(author, content);
+	} else if (message.toLowerCase().startsWith(Config.Twitch.prefix + 'startladder')) {
+
 	}
 });
 
