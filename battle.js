@@ -5,6 +5,7 @@ class Battle {
 	acceptingVotes;
 	constructor(room) {
 		this.room = room;
+		// this.team = null;
 		this.tally = new Map();
 		this.votecmds = {};
 		this.acceptingVotes = false;
@@ -16,11 +17,12 @@ class Battle {
 		if (request.active && !request.forceSwitch) {
 			for (let y = 0; y < request.active.length; y++) {
 				for (let x = 0; x < request.active[y].moves.length; x++) {
+					if (request.active[y].moves[x].disabled) continue;
+					let move = request.active[y].moves[x].move;
 					this.votecmds[`move ${x + 1}`] = `/move ${x + 1}`;
-					this.votecmds[`move ${request.active[y].moves[x].move.toLowerCase()}`] = `/move ${x + 1}`;
+					this.votecmds[`move ${move.toLowerCase()}`] = `/move ${x + 1}`;
 					if (request.active[y].canTerastallize) {
 						this.votecmds[`move ${x + 1} tera`] = `/move ${x + 1} terastallize`;
-						let move = request.active[y].moves[x].move;
 						this.votecmds[`move ${move.toLowerCase()} tera`] = `/move ${x + 1} terastallize`;
 					}
 				}
@@ -40,7 +42,7 @@ class Battle {
 	startVote() {
 		this.tally.clear();
 		this.acceptingVotes = true;
-		return new Promise(resolve => setTimeout(() => this.endVote(), this.timeout * 1000));
+		this.endVoting = setTimeout(() => this.endVote(), this.timeout * 1000);
 	}
 	endVote() {
 		this.acceptingVotes = false;
@@ -72,6 +74,10 @@ class Battle {
 			return;
 		}
 		this.tally.set(username, realvote);
+	}
+	leave() {
+		makeDecision('/part', this.room);
+		clearTimeout(this.endVoting);
 	}
 }
 module.exports = Battle;

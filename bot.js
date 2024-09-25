@@ -5,6 +5,7 @@ global.Config = require('./config/config.js');
 const Battle = require('./battle.js');
 
 let session;
+let laddering;
 let inBattle = false;
 
 // Connect to PS!
@@ -31,6 +32,14 @@ Ps.on('request', (room, request, isIntro) => {
 	if (request.length) {
 		session.genOptions(request);
 		session.startVote();
+	}
+});
+
+Ps.on('win', (room, request, isIntro) => {
+	session.leave();
+	// Ps.rooms.get(room).send('/part');
+	if (laddering) {
+
 	}
 });
 
