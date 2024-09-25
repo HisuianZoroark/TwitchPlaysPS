@@ -8,7 +8,7 @@ class Battle {
 		this.tally = new Map();
 		this.votecmds = {};
 		this.acceptingVotes = false;
-		this.timeout = 30;
+		this.timeout = 15;
 	}
 	genOptions(requestState) {
 		this.votecmds = {};
@@ -20,7 +20,8 @@ class Battle {
 					this.votecmds[`move ${request.active[y].moves[x].move.toLowerCase()}`] = `/move ${x + 1}`;
 					if (request.active[y].canTerastallize) {
 						this.votecmds[`move ${x + 1} tera`] = `/move ${x + 1} terastallize`;
-						this.votecmds[`move ${request.active[y].moves[x].move.toLowerCase()} tera`] = `/move ${x + 1} terastallize`;
+						let move = request.active[y].moves[x].move;
+						this.votecmds[`move ${move.toLowerCase()} tera`] = `/move ${x + 1} terastallize`;
 					}
 				}
 			}
@@ -31,7 +32,8 @@ class Battle {
 			for (let x = 0; x < request.side.pokemon.length; x++) {
 				if (request.active && !request.teamPreview && x <= 0) continue;
 				this.votecmds[`switch ${x + 1}`] = `/${keyword} ${x + 1}`;
-				// this.votecmds[`switch ${request.active.moves[x].move}`] = `/${keyword} ${x}`;
+				let pokemon = request.side.pokemon[x].ident.substring(4);
+				this.votecmds[`switch ${pokemon.toLowerCase()}`] = `/${keyword} ${x + 1}`;
 			}
 		}
 	}
@@ -54,6 +56,8 @@ class Battle {
 			for (let [key, value] of pool) {
 				if (value > winningValue) winner = key;
 			}
+		} else {
+
 		}
 		console.log(winner);
 		makeDecision(winner, this.room);
