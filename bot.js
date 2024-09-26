@@ -133,6 +133,13 @@ Twitch.on('message', (channel, tags, message, self) => {
 			}
 			process.exit();
 			break;
+		case 'team':
+			twitchChat(`${team}`);
+			break;
+		// case 'pic':
+		// case 'partnersincrime':
+		// 	twitchChat(`That command does not exist.`);
+		// 	break;
 		default:
 			twitchChat(`That command does not exist.`);
 	}
