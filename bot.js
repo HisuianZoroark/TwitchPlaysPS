@@ -97,7 +97,7 @@ Twitch.on('message', (channel, tags, message, self) => {
 			}
 			args = content.split(',');
 			format = args[0].trim();
-			if (!Dex.formats.get(format).exists) {
+			if (!Dex.formats.get(format).exists || !Dex.formats.get(format).searchShow) {
 				twitchChat(`${format} doesn't seem to be a a proper format.`);
 				return;
 			}
