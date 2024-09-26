@@ -12,7 +12,7 @@ class Battle {
 		this.tally = new Map();
 		this.votecmds = new Map();
 		this.acceptingVotes = false;
-		this.timeout = 15;
+		this.timeout = 60;
 	}
 	genOptions(requestState) {
 		this.votecmds.clear();
@@ -82,7 +82,7 @@ class Battle {
 	endVote() {
 		this.acceptingVotes = false;
 		twitchChat(`Ending vote...`);
-		let winner = ['/choose default'];
+		let winner = [];
 		if (this.tally.size > 0) {
 			let pool = new Map();
 			this.tally.forEach((val, key) => {
@@ -101,7 +101,8 @@ class Battle {
 				}
 			}
 		}
-		let winningcmd = winner[Math.floor(Math.random() * winner.length)];
+		let winningcmd = '/choose default';
+		if (winner.length > 0) winningcmd = winner[Math.floor(Math.random() * winner.length)];
 		console.log(winningcmd);
 		makeDecision(winningcmd, this.room);
 	}
@@ -119,6 +120,11 @@ class Battle {
 	leave() {
 		makeDecision('/part', this.room);
 		clearTimeout(this.endVoting);
+	}
+	earlyEnd() {
+		if (!this.acceptingVotes) return;
+		clearTimeout(this.endVoting);
+		this.endVote();
 	}
 	setTeam(link) {
 		this.team = link;

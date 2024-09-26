@@ -37,6 +37,18 @@ Ps.on('popup', (room, message, isIntro) => {
 	}
 	console.log(message);
 });
+Ps.on('inactive', (room, notif, isIntro) => {
+	if (!session) return;
+	if (!notif.startsWith(Config.Showdown.username)) return;
+	let slicedMessage = notif.slice(Config.Showdown.username.length).trim().split(' ');
+	let earlyEnd = 60;
+	let timerIndex = 1;
+	if (slicedMessage[0] === 'disconnected' || slicedMessage[0] === 'reconnected') timerIndex = 3;
+	let inactiveTime = parseInt(slicedMessage[timerIndex]);
+	if (inactiveTime <= earlyEnd) {
+		session.earlyEnd();
+	}
+});
 Ps.on('request', (room, request, isIntro) => {
 	if (!session) {
 		session = new Battle(room, team);
