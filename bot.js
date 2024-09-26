@@ -128,6 +128,7 @@ Twitch.on('message', (channel, tags, message, self) => {
 				laddering = true;
 				Ps.send(`|/utm ${team}`);
 				Ps.send(`|/search ${format}`);
+				twitchChat(`Started laddering.`);
 			} else {
 				(async () => {
 					let link = args[1].trim();
@@ -150,6 +151,7 @@ Twitch.on('message', (channel, tags, message, self) => {
 					laddering = true;
 					Ps.send(`|/utm ${team}`);
 					Ps.send(`|/search ${format}`);
+					twitchChat(`Started laddering.`);
 				})();
 			}
 			break;
@@ -162,6 +164,7 @@ Twitch.on('message', (channel, tags, message, self) => {
 			}
 			laddering = false;
 			Ps.send('|/cancelsearch');
+			twitchChat(`Stopped ladderisng.`);
 			break;
 		case 'kill':
 			if (!isAdmin) {
