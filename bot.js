@@ -2,6 +2,7 @@
 const Tmi = require('tmi.js');
 const PSClient = require('ps-client');
 const PokemonShowdown = require('pokemon-showdown');
+const Fetch = require('node-fetch');
 global.Config = require('./config/config.js');
 const Battle = require('./battle.js');
 const Dex = PokemonShowdown.Dex;
@@ -104,13 +105,27 @@ Twitch.on('message', (channel, tags, message, self) => {
 			if (Dex.formats.get(format).team) {
 				team = null;
 			} else {
-				let link = args[1].trim();
-				if (link.match(/https:\/\/pokepast\.es\/(.*)$/)) {
-					extractTeam(link);
-				}
-				console.log(pokepaste);
-				console.log(team);
-				if (!team) return;
+				(async () => {
+					let link = args[1].trim();
+					if (link.match(/https:\/\/pokepast\.es\/(.*)$/)) {
+						const jsonLink = link + `/json`;
+						const response = await Fetch(jsonLink);
+						let pasteData = await response.text();
+						let data;
+						try {
+							 data = JSON.parse(pasteData);
+							 team = Teams.pack(Teams.import(data.paste));
+							 pokepaste = link;
+						} catch (e) {
+							console.log(e);
+							twitchChat(`Link does not have a team.`);
+							team = null;
+							return;
+						}
+					}
+					console.log(pokepaste);
+					console.log(team);
+				})();
 			}
 			// laddering = true;
 			// Ps.send(`/utm ${team}`);
@@ -144,24 +159,6 @@ Twitch.on('message', (channel, tags, message, self) => {
 			twitchChat(`That command does not exist.`);
 	}
 });
-
-function extractTeam(linkString) {
-	const jsonLink = linkString + `/json`;
-	// const response = await Fetch(jsonLink);
-	// let pasteData = await response.text();
-	let data;
-	try {
-		 data = JSON.parse(pasteData);
-	} catch (e) {
-		console.log(e);
-		twitchChat(`Link does not have a team.`);
-		team = null;
-		return;
-	}
-
-	team = Teams.pack(Teams.import(data.paste));
-	pokepaste = linkString;
-}
 
 function makeDecision(message, room) {
 	console.log(Ps.rooms);
