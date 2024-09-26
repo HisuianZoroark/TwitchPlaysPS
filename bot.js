@@ -194,8 +194,12 @@ Twitch.on('message', (channel, tags, message, self) => {
 });
 
 function makeDecision(message, room) {
-	console.log(room);
-	Ps.rooms.get(room).send(message);
+	try {
+		console.log(room);
+		Ps.rooms.get(room).send(message);
+	} catch (e) {
+		console.log('room doesnt exist?');
+	}
 }
 global.makeDecision = makeDecision;
 
