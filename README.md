@@ -1,9 +1,9 @@
 # TwitchPlaysPS
 This is a Twitch Bot with a PS client that allows you to cast votes to make a bot perform actions similarly to Twitch Plays Pokemon. It is still very new and barely holds itself together, but hey it works.
 
-# Installation
+## Installation
 You will need:
-* Node.js
+* Node.js (v14.0.0 or higher)
 * A Pokemon Showdown account for the bot
 * A Twitch account for the bot and its respective OAuth access token
 
@@ -15,7 +15,7 @@ run `npm install`
 
 run `node bot`
 
-# (Important) Commands
+## Commands
 
 ### vote move [move name or slot number] or move [move name or slot number]
 
@@ -28,6 +28,10 @@ Casts a vote for using a move while terastallizing
 ### vote switch [pokemon name or slot number] or switch [pokemon name or slot number]
 
 Casts a vote for switching to a pokemon.
+
+### team
+
+Displays the team used for the ladder session.
 
 ### startladder [tier, pokepaste (optional)]
 
