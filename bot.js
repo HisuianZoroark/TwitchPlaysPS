@@ -104,6 +104,10 @@ Twitch.on('message', (channel, tags, message, self) => {
 			}
 			if (Dex.formats.get(format).team) {
 				team = null;
+				pokepaste = 'No team link provided.';
+				laddering = true;
+				Ps.send(`/utm null`);
+				Ps.send(`/search ${format}`);
 			} else {
 				(async () => {
 					let link = args[1].trim();
@@ -123,13 +127,11 @@ Twitch.on('message', (channel, tags, message, self) => {
 							return;
 						}
 					}
-					console.log(pokepaste);
-					console.log(team);
+					laddering = true;
+					Ps.send(`/utm ${team}`);
+					Ps.send(`/search ${format}`);
 				})();
 			}
-			// laddering = true;
-			// Ps.send(`/utm ${team}`);
-			// Ps.send(`/search ${format}`);
 			break;
 		case 'end':
 		case 'stop':
