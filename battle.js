@@ -12,7 +12,7 @@ class Battle {
 		this.tally = new Map();
 		this.votecmds = new Map();
 		this.acceptingVotes = false;
-		this.timeout = 60;
+		this.timeout = 30;
 	}
 	genOptions(requestState) {
 		this.votecmds.clear();
@@ -51,7 +51,8 @@ class Battle {
 			let keyword = 'switch';
 			if (request.teamPreview) keyword = 'team';
 			for (let x = 0; x < request.side.pokemon.length; x++) {
-				if (request.active && !request.teamPreview && x <= 0) continue;
+				if (request.side.pokemon[x].active && !request.teamPreview) continue;
+				if (request.side.pokemon[x].condition === '0 fnt') continue;
 				this.votecmds.set(`switch ${x + 1}`, `/${keyword} ${x + 1}`);
 				let pokemon = request.side.pokemon[x].details.split(',')[0];
 				// this.votecmds[`switch ${pokemon.toLowerCase()}`] = `/${keyword} ${x + 1}`;
@@ -73,10 +74,10 @@ class Battle {
 		this.votecmds.forEach((value, key) => {
 			if (!key.match(/\s[\d]+(\stera)?$/)) cmdArray.push(key);
 		});
-		this.acceptingVotes = true;
 		twitchChat(`Starting vote! Use ${Config.Twitch.prefix}vote to vote!`);
 		twitchChat(`Valid vote options: ${cmdArray.join(', ')}`);
 		twitchChat(`(You can also use the move or pokemon slot number instead)`);
+		this.acceptingVotes = true;
 		this.endVoting = setTimeout(() => this.endVote(), this.timeout * 1000);
 	}
 	endVote() {
@@ -123,6 +124,7 @@ class Battle {
 	}
 	earlyEnd() {
 		if (!this.acceptingVotes) return;
+		if (this.tally.size <= 0) return;
 		clearTimeout(this.endVoting);
 		this.endVote();
 	}
@@ -131,6 +133,9 @@ class Battle {
 	}
 	getTeam() {
 		return this.team;
+	}
+	waiting(request) {
+		return !!JSON.parse(request).wait;
 	}
 }
 module.exports = Battle;

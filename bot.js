@@ -33,7 +33,7 @@ Ps.on('message', message => {
 Ps.on('popup', (room, message, isIntro) => {
 	if (message.startsWith(`Your team was rejected for the following reasons:`)) {
 		laddering = false;
-		Ps.send('/cancelsearch');
+		Ps.send('|/cancelsearch');
 	}
 	console.log(message);
 });
@@ -56,18 +56,21 @@ Ps.on('request', (room, request, isIntro) => {
 	}
 	if (request.length) {
 		if (!session.getTeam()) {
+			// todo: randbats
 		}
-		session.genOptions(request);
-		session.startVote();
+		if (!session.waiting(request)) {
+			session.genOptions(request);
+			session.startVote();
+		}
 	}
 });
 
 Ps.on('win', (room, request, isIntro) => {
 	session.leave();
-	// Ps.rooms.get(room).send('/part');
+	// Ps.send(`|/leave ${room}`);
 	if (laddering) {
-		Ps.send(`/utm ${team}`);
-		Ps.send(`/search ${format}`);
+		Ps.send(`|/utm ${team}`);
+		Ps.send(`|/search ${format}`);
 	}
 });
 
@@ -123,8 +126,8 @@ Twitch.on('message', (channel, tags, message, self) => {
 				team = null;
 				pokepaste = null;
 				laddering = true;
-				Ps.send(`/utm null`);
-				Ps.send(`/search ${format}`);
+				Ps.send(`|/utm ${team}`);
+				Ps.send(`|/search ${format}`);
 			} else {
 				(async () => {
 					let link = args[1].trim();
@@ -145,8 +148,8 @@ Twitch.on('message', (channel, tags, message, self) => {
 						}
 					}
 					laddering = true;
-					Ps.send(`/utm ${team}`);
-					Ps.send(`/search ${format}`);
+					Ps.send(`|/utm ${team}`);
+					Ps.send(`|/search ${format}`);
 				})();
 			}
 			break;
@@ -158,7 +161,7 @@ Twitch.on('message', (channel, tags, message, self) => {
 				return;
 			}
 			laddering = false;
-			Ps.send('/cancelsearch');
+			Ps.send('|/cancelsearch');
 			break;
 		case 'kill':
 			if (!isAdmin) {
@@ -181,13 +184,16 @@ Twitch.on('message', (channel, tags, message, self) => {
 		case 'triples':
 			twitchChat(`Play Triples! https://spo.ink/svtriples`);
 			break;
+		case 'hi':
+			if (author !== 'hisuian_zoroark') return;
+			twitchChat(`zo`);
+			break;
 		default:
 			twitchChat(`That command does not exist.`);
 	}
 });
 
 function makeDecision(message, room) {
-	console.log(Ps.rooms);
 	console.log(room);
 	Ps.rooms.get(room).send(message);
 }
