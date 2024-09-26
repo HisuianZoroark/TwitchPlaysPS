@@ -1,3 +1,6 @@
+// Welcome to my personal hell. I'm sorry
+// Will elaborate on code with comments later
+
 class Battle {
 	room;
 	tally;
