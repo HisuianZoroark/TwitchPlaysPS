@@ -11,6 +11,7 @@ let laddering = false;
 let inBattle = false;
 let format;
 let team = null;
+let pokepaste = 'No team link provided.';
 
 // Connect to PS!
 const Ps = new PSClient.Client({
@@ -27,6 +28,13 @@ Ps.on('message', message => {
 	//console.log(Ps.rooms);
 	if (message.content === '/challenge gen9randombattle@@@TEAMPREVIEW|gen9randombattle@@@TEAMPREVIEW|||') return message.reply('/accept');
 	// console.log(message.content);
+});
+Ps.on('popup', (room, message, isIntro) => {
+	if (message.startsWith(`Your team was rejected for the following reasons:`)) {
+		laddering = false;
+		Ps.send('/cancelsearch');
+	}
+	console.log(message);
 });
 Ps.on('request', (room, request, isIntro) => {
 	if (!session) {
@@ -45,9 +53,8 @@ Ps.on('win', (room, request, isIntro) => {
 	session.leave();
 	// Ps.rooms.get(room).send('/part');
 	if (laddering) {
-
-	} else {
-
+		Ps.send(`/utm ${team}`);
+		Ps.send(`/search ${format}`);
 	}
 });
 
@@ -79,6 +86,7 @@ Twitch.on('message', (channel, tags, message, self) => {
 			session.submitVote(author, content);
 			break;
 		case 'start':
+		case 'ladder':
 		case 'startladder':
 			if (!isAdmin) {
 				twitchChat(`Access denied.`);
@@ -95,25 +103,28 @@ Twitch.on('message', (channel, tags, message, self) => {
 			}
 			if (Dex.formats.get(format).team) {
 				team = null;
-				console.log('stuff');
 			} else {
-				pokepaste = args[1].trim();
-				team = extractTeam(pokepaste);
-				if (!team) {
-					twitchChat(`${pokepaste} doesn't seem to be a proper team.`);
-					return;
+				let link = args[1].trim();
+				if (link.match(/https:\/\/pokepast\.es\/(.*)$/)) {
+					extractTeam(link);
 				}
+				console.log(pokepaste);
+				console.log(team);
+				if (!team) return;
 			}
-			laddering = true;
-			// etc.
+			// laddering = true;
+			// Ps.send(`/utm ${team}`);
+			// Ps.send(`/search ${format}`);
 			break;
 		case 'end':
+		case 'stop':
 		case 'endladder':
 			if (!isAdmin) {
 				twitchChat(`Access denied.`);
 				return;
 			}
 			laddering = false;
+			Ps.send('/cancelsearch');
 			break;
 		case 'kill':
 			if (!isAdmin) {
@@ -126,6 +137,24 @@ Twitch.on('message', (channel, tags, message, self) => {
 			twitchChat(`That command does not exist.`);
 	}
 });
+
+function extractTeam(linkString) {
+	const jsonLink = linkString + `/json`;
+	// const response = await Fetch(jsonLink);
+	// let pasteData = await response.text();
+	let data;
+	try {
+		 data = JSON.parse(pasteData);
+	} catch (e) {
+		console.log(e);
+		twitchChat(`Link does not have a team.`);
+		team = null;
+		return;
+	}
+
+	team = Teams.pack(Teams.import(data.paste));
+	pokepaste = linkString;
+}
 
 function makeDecision(message, room) {
 	console.log(Ps.rooms);
