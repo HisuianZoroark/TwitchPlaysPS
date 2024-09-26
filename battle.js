@@ -3,9 +3,9 @@ class Battle {
 	tally;
 	votecmds;
 	acceptingVotes;
-	constructor(room) {
+	constructor(room, team) {
 		this.room = room;
-		// this.team = null;
+		this.team = team;
 		this.tally = new Map();
 		this.votecmds = {};
 		this.acceptingVotes = false;
@@ -78,6 +78,12 @@ class Battle {
 	leave() {
 		makeDecision('/part', this.room);
 		clearTimeout(this.endVoting);
+	}
+	setTeam(link) {
+		this.team = link;
+	}
+	getTeam() {
+		return this.team;
 	}
 }
 module.exports = Battle;

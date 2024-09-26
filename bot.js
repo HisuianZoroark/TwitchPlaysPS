@@ -1,12 +1,16 @@
 'use strict';
 const Tmi = require('tmi.js');
 const PSClient = require('ps-client');
+const PokemonShowdown = require('pokemon-showdown');
 global.Config = require('./config/config.js');
 const Battle = require('./battle.js');
-
+const Dex = PokemonShowdown.Dex;
+const Teams = PokemonShowdown.Teams;
 let session;
 let laddering = false;
 let inBattle = false;
+let format;
+let team = null;
 
 // Connect to PS!
 const Ps = new PSClient.Client({
@@ -26,10 +30,12 @@ Ps.on('message', message => {
 });
 Ps.on('request', (room, request, isIntro) => {
 	if (!session) {
-		session = new Battle(room);
+		session = new Battle(room, team);
 		inBattle = true;
 	}
 	if (request.length) {
+		if (!session.getTeam()) {
+		}
 		session.genOptions(request);
 		session.startVote();
 	}
@@ -81,9 +87,25 @@ Twitch.on('message', (channel, tags, message, self) => {
 				twitchChat(`We're already in a ladder session.`);
 				return;
 			}
+			args = content.split(',');
+			format = args[0].trim();
+			if (!Dex.formats.get(format).exists) {
+				twitchChat(`${format} doesn't seem to be a a proper format.`);
+				return;
+			}
+			if (Dex.formats.get(format).team) {
+				team = null;
+				console.log('stuff');
+			} else {
+				pokepaste = args[1].trim();
+				team = extractTeam(pokepaste);
+				if (!team) {
+					twitchChat(`${pokepaste} doesn't seem to be a proper team.`);
+					return;
+				}
+			}
 			laddering = true;
-			args = content.split(',').forEach((i, e) => args[e] = i.trim());
-
+			// etc.
 			break;
 		case 'end':
 		case 'endladder':
