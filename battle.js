@@ -52,7 +52,7 @@ class Battle {
 			if (request.teamPreview) keyword = 'team';
 			for (let x = 0; x < request.side.pokemon.length; x++) {
 				if (request.active && !request.teamPreview && x <= 0) continue;
-				this.votecmds[`switch ${x + 1}`] = `/${keyword} ${x + 1}`;
+				this.votecmds.set(`switch ${x + 1}`, `/${keyword} ${x + 1}`);
 				let pokemon = request.side.pokemon[x].details.split(',')[0];
 				// this.votecmds[`switch ${pokemon.toLowerCase()}`] = `/${keyword} ${x + 1}`;
 				if (this.votecmds.get(`switch ${pokemon.toLowerCase()}`)) {
@@ -69,12 +69,20 @@ class Battle {
 	}
 	startVote() {
 		this.tally.clear();
+		let cmdArray = [];
+		this.votecmds.forEach((value, key) => {
+			if (!key.match(/\s[\d]+(\stera)?$/)) cmdArray.push(key);
+		});
 		this.acceptingVotes = true;
+		twitchChat(`Starting vote! Use ${Config.Twitch.prefix}vote to vote!`);
+		twitchChat(`Valid vote options: ${cmdArray.join(', ')}`);
+		twitchChat(`(You can also use the move or pokemon slot number instead)`);
 		this.endVoting = setTimeout(() => this.endVote(), this.timeout * 1000);
 	}
 	endVote() {
 		this.acceptingVotes = false;
-		let winner = '/default';
+		twitchChat(`Ending vote...`);
+		let winner = '/choose default';
 		if (this.tally.size > 0) {
 			let pool = new Map();
 			this.tally.forEach((val, key) => {
