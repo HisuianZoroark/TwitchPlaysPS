@@ -174,10 +174,13 @@ Twitch.on('message', (channel, tags, message, self) => {
 			}
 			twitchChat(`Team link: ${pokepaste}`);
 			break;
-		// case 'pic':
-		// case 'partnersincrime':
-		// 	twitchChat(`That command does not exist.`);
-		// 	break;
+		case 'pic':
+		case 'partnersincrime':
+			twitchChat(`Play Partners in Crime! https://spo.ink/svpartnersincrime`);
+			break;
+		case 'triples':
+			twitchChat(`Play Triples! https://spo.ink/svtriples`);
+			break;
 		default:
 			twitchChat(`That command does not exist.`);
 	}
