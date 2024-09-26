@@ -74,7 +74,7 @@ class Battle {
 	}
 	endVote() {
 		this.acceptingVotes = false;
-		let winner = 'no winner';
+		let winner = '/default';
 		if (this.tally.size > 0) {
 			let pool = new Map();
 			this.tally.forEach((val, key) => {
