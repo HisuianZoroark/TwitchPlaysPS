@@ -12,3 +12,25 @@ Make a file called config.js with the contents from config-example.js and put in
 run `npm install`
 
 run `node bot`
+
+# Commands
+
+### vote move [move name or slot number]
+
+casts a vote for using a move
+
+### vote move [move name or slot number] tera
+
+casts a vote for using a move while terastallizing
+
+### vote switch [pokemon name or slot number]
+
+casts a vote for switching to a pokemon.
+
+### startladder [tier, pokepaste (optional)]
+
+starts laddering in a tier with a pokepaste. you do not need a team for random formats.
+
+### endladder
+
+stops laddering.
