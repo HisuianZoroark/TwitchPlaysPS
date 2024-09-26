@@ -79,10 +79,15 @@ Twitch.on('message', (channel, tags, message, self) => {
 	let isAdmin = [Config.Twitch.streamer].concat(Config.Twitch.sysops).includes(author);
 	switch (command) {
 		case 'v':
+		case 'move':
+		case 'switch':
 		case 'vote':
 			if (inBattle === false || !session) {
 				twitchChat(`${author} we aren't in a battle yet!`);
 				return;
+			}
+			if (command === 'move' || command === 'switch') {
+				content = command.concat(' ') + content;
 			}
 			session.submitVote(author, content);
 			break;

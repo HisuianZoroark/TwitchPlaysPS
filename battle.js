@@ -82,7 +82,7 @@ class Battle {
 	endVote() {
 		this.acceptingVotes = false;
 		twitchChat(`Ending vote...`);
-		let winner = '/choose default';
+		let winner = ['/choose default'];
 		if (this.tally.size > 0) {
 			let pool = new Map();
 			this.tally.forEach((val, key) => {
@@ -90,15 +90,20 @@ class Battle {
 				let numVotes = pool.get(cmd) || 0;
 				pool.set(cmd, (numVotes + 1));
 			});
-			let winningValue = 0;
+			let winningValue = -1;
 			for (let [key, value] of pool) {
-				if (value > winningValue) winner = key;
+				if (value >= winningValue) {
+					if (value === winningValue) {
+						winner.push(key);
+					} else {
+						winner = [key];
+					}
+				}
 			}
-		} else {
-
 		}
-		console.log(winner);
-		makeDecision(winner, this.room);
+		let winningcmd = winner[Math.floor(Math.random() * winner.length)];
+		console.log(winningcmd);
+		makeDecision(winningcmd, this.room);
 	}
 	async submitVote(username, vote) {
 		console.log(vote);
