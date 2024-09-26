@@ -12,7 +12,7 @@ let laddering = false;
 let inBattle = false;
 let format;
 let team = null;
-let pokepaste = 'No team link provided.';
+let pokepaste;
 
 // Connect to PS!
 const Ps = new PSClient.Client({
@@ -109,7 +109,7 @@ Twitch.on('message', (channel, tags, message, self) => {
 			}
 			if (Dex.formats.get(format).team) {
 				team = null;
-				pokepaste = 'No team link provided.';
+				pokepaste = null;
 				laddering = true;
 				Ps.send(`/utm null`);
 				Ps.send(`/search ${format}`);
@@ -156,7 +156,11 @@ Twitch.on('message', (channel, tags, message, self) => {
 			process.exit();
 			break;
 		case 'team':
-			twitchChat(`${team}`);
+			if (!pokepaste) {
+				twitchChat(`There is no team link or this is a Random Battle.`);
+				return;
+			}
+			twitchChat(`Team link: ${pokepaste}`);
 			break;
 		// case 'pic':
 		// case 'partnersincrime':
