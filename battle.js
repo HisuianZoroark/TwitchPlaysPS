@@ -104,14 +104,14 @@ class Battle {
 		}
 		let winningcmd = '/choose default';
 		if (winner.length > 0) winningcmd = winner[Math.floor(Math.random() * winner.length)];
-		console.log(winningcmd);
+		// console.log(winningcmd);
 		makeDecision(winningcmd, this.room);
 	}
 	async submitVote(username, vote) {
-		console.log(vote);
+		// console.log(vote);
 		let sanitizedvote = vote.toLowerCase().trim();
 		let realvote = this.votecmds.get(sanitizedvote) || null;
-		console.log(this.votecmds.get(sanitizedvote));
+		// console.log(this.votecmds.get(sanitizedvote));
 		if (!realvote || !this.acceptingVotes) {
 			twitchChat(`@${username} your vote was not accepted.`);
 			return;

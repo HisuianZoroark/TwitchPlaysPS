@@ -24,18 +24,18 @@ const Ps = new PSClient.Client({
 
 Ps.connect();
 
-Ps.on('message', message => {
+/*Ps.on('message', message => {
 	if (message.isIntro) return;
 	//console.log(Ps.rooms);
 	if (message.content === '/challenge gen9randombattle@@@TEAMPREVIEW|gen9randombattle@@@TEAMPREVIEW|||') return message.reply('/accept');
 	// console.log(message.content);
-});
+});*/
+
 Ps.on('popup', (room, message, isIntro) => {
 	if (message.startsWith(`Your team was rejected for the following reasons:`)) {
 		laddering = false;
 		Ps.send('|/cancelsearch');
 	}
-	console.log(message);
 });
 Ps.on('inactive', (room, notif, isIntro) => {
 	if (!session) return;
@@ -195,7 +195,7 @@ Twitch.on('message', (channel, tags, message, self) => {
 
 function makeDecision(message, room) {
 	try {
-		console.log(room);
+		// console.log(room);
 		Ps.rooms.get(room).send(message);
 	} catch (e) {
 		console.log('room doesnt exist?');
