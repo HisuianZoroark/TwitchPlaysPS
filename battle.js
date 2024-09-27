@@ -50,9 +50,15 @@ class Battle {
 		if (!request.active || !request.active.trapped) {
 			let keyword = 'switch';
 			if (request.teamPreview) keyword = 'team';
+			let isReviving = false;
 			for (let x = 0; x < request.side.pokemon.length; x++) {
+				if (request.side.pokemon[x].reviving) isReviving = true;
 				if (request.side.pokemon[x].active && !request.teamPreview) continue;
-				if (request.side.pokemon[x].condition === '0 fnt') continue;
+				if (isReviving) {
+					if (request.side.pokemon[x].condition !== '0 fnt') continue;
+				} else {
+					if (request.side.pokemon[x].condition === '0 fnt') continue;
+				}
 				this.votecmds.set(`switch ${x + 1}`, `/${keyword} ${x + 1}`);
 				let pokemon = request.side.pokemon[x].details.split(',')[0];
 				// this.votecmds[`switch ${pokemon.toLowerCase()}`] = `/${keyword} ${x + 1}`;
