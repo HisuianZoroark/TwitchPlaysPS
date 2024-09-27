@@ -17,30 +17,33 @@ run `node bot`
 
 ## Commands
 
-### vote move [move name or slot number] or move [move name or slot number]
-
+### vote move [move name or slot number]
+Casts a vote for using a move
+### move [move name or slot number]
 Casts a vote for using a move
 
-### vote move [move name or slot number] tera or move [move name or slot number] tera
-
+### vote move [move name or slot number] tera
+Casts a vote for using a move while terastallizing
+### move [move name or slot number] tera
 Casts a vote for using a move while terastallizing
 
-### vote switch [pokemon name or slot number] or switch [pokemon name or slot number]
-
+### vote switch [pokemon name or slot number]
+Casts a vote for switching to a pokemon.
+### switch [pokemon name or slot number]
 Casts a vote for switching to a pokemon.
 
 ### team
-
 Displays the team used for the ladder session.
 
 ### startladder [tier, pokepaste (optional)]
-
 Starts laddering in a tier with a pokepaste. you do not need a team for random formats.
 
 ### endladder
-
 Stops laddering.
 
 ### kill
 
 Forces the bot offline
+
+## Credits
+HiZo (HisuianZoroark) - Maintainer and Lead Developer
