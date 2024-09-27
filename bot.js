@@ -37,6 +37,11 @@ Ps.on('popup', (room, message, isIntro) => {
 		Ps.send('|/cancelsearch');
 	}
 });
+
+Ps.on('error', (room, message, isIntro) => {
+	console.log(message);
+});
+
 Ps.on('inactive', (room, notif, isIntro) => {
 	if (!session) return;
 	if (!notif.startsWith(Config.Showdown.username)) return;
