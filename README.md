@@ -1,7 +1,5 @@
 # TwitchPlaysPS
-This is a Twitch Bot with a PS client that allows you to cast votes to make a bot perform actions similarly to Twitch Plays Pokemon. It is still very new and barely holds itself together, but hey it works.
-
-Currently only supports most current generation singles formats. Does not yet support Doubles, Mega Evolution, Z-Crystals, picking more than 1 pokemon in team preview, etc.
+This is a Twitch Bot with a PS client that allows you to cast votes to make a bot perform actions similarly to Twitch Plays Pokemon. Currently only supports most current generation singles formats. Does not yet support Doubles, Mega Evolution, Z-Crystals, picking more than 1 pokemon in team preview, etc.
 
 ## Installation
 You will need:
