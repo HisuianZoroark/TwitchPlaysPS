@@ -88,7 +88,7 @@ Twitch.connect();
 Twitch.on('message', (channel, tags, message, self) => {
 	if (self || !message.startsWith(Config.Twitch.prefix)) return;
 	const author = tags.username;
-	let args = message.slice(1).split(' ');
+	let args = message.slice(Config.Twitch.prefix.length).split(' ');
 	let command = args.shift().toLowerCase();
 	let content = args.join(' ');
 	let isAdmin = [Config.Twitch.streamer].concat(Config.Twitch.sysops).includes(author);
