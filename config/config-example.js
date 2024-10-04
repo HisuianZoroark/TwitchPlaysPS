@@ -11,7 +11,6 @@ exports.Twitch = {
   oauth: '',
   streamer: '',
   sysops: [],
-  prefix: '',
 };
 
 exports.Settings = {
