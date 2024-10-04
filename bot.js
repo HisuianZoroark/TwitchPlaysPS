@@ -27,11 +27,10 @@ Ps.connect();
 // Ps.on('message', message => {
 // 	if (message.isIntro) return;
 // 	//console.log(Ps.rooms);
-// 	if (message.content === '/challenge gen9randomdoublesbattle|gen9randomdoublesbattle|||') {
+// 	if (message.content === '/challenge gen9randombattle|gen9randombattle|||') {
 // 		message.reply('/utm null');
 // 		message.reply('/accept');
 // 	}
-// 	console.log(message.content);
 // });
 
 Ps.on('popup', (room, message, isIntro) => {
@@ -52,7 +51,7 @@ Ps.on('inactive', (room, notif, isIntro) => {
 	if (!session) return;
 	if (!notif.startsWith(Config.Showdown.username)) return;
 	let slicedMessage = notif.slice(Config.Showdown.username.length).trim().split(' ');
-	let earlyEnd = 60;
+	let earlyEnd = Config.Settings.inactivityfloor;
 	let timerIndex = 1;
 	if (slicedMessage[0] === 'disconnected' || slicedMessage[0] === 'reconnected') timerIndex = 3;
 	let inactiveTime = parseInt(slicedMessage[timerIndex]);
@@ -97,9 +96,9 @@ const Twitch = new Tmi.Client({
 Twitch.connect();
 
 Twitch.on('message', (channel, tags, message, self) => {
-	if (self || !message.startsWith(Config.Twitch.prefix)) return;
+	if (self || !message.startsWith(Config.Settings.prefix)) return;
 	const author = tags.username;
-	let args = message.slice(Config.Twitch.prefix.length).split(' ');
+	let args = message.slice(Config.Settings.prefix.length).split(' ');
 	let command = args.shift().toLowerCase();
 	let content = args.join(' ');
 	let isAdmin = [Config.Twitch.streamer].concat(Config.Twitch.sysops).includes(author);

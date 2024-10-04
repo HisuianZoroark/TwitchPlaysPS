@@ -12,7 +12,7 @@ class Battle {
 		this.tally = new Map();
 		this.votecmds = new Map();
 		this.acceptingVotes = false;
-		this.timeout = 30;
+		this.timeout = Config.Settings.voteduration;
 	}
 	genOptions(requestState) {
 		this.votecmds.clear();
@@ -80,7 +80,7 @@ class Battle {
 		this.votecmds.forEach((value, key) => {
 			if (!key.match(/\s[\d]+(\stera)?$/)) cmdArray.push(key);
 		});
-		twitchChat(`Starting vote! Use ${Config.Twitch.prefix}vote to vote!`);
+		twitchChat(`Starting vote! Use ${Config.Settings.prefix}vote to vote!`);
 		twitchChat(`Valid vote options: ${cmdArray.join(', ')}`);
 		twitchChat(`(You can also use the move or pokemon slot number instead)`);
 		this.acceptingVotes = true;

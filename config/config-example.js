@@ -13,3 +13,9 @@ exports.Twitch = {
   sysops: [],
   prefix: '',
 };
+
+exports.Settings = {
+  prefix: '',
+  voteduration: 15,
+  inactivityfloor: 60,
+};
