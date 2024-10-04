@@ -24,21 +24,27 @@ const Ps = new PSClient.Client({
 
 Ps.connect();
 
-/*Ps.on('message', message => {
-	if (message.isIntro) return;
-	//console.log(Ps.rooms);
-	if (message.content === '/challenge gen9randombattle@@@TEAMPREVIEW|gen9randombattle@@@TEAMPREVIEW|||') return message.reply('/accept');
-	// console.log(message.content);
-});*/
+// Ps.on('message', message => {
+// 	if (message.isIntro) return;
+// 	//console.log(Ps.rooms);
+// 	if (message.content === '/challenge gen9randomdoublesbattle|gen9randomdoublesbattle|||') {
+// 		message.reply('/utm null');
+// 		message.reply('/accept');
+// 	}
+// 	console.log(message.content);
+// });
 
 Ps.on('popup', (room, message, isIntro) => {
 	if (message.startsWith(`Your team was rejected for the following reasons:`)) {
 		laddering = false;
+		team = null;
+		pokepaste = false;
 		Ps.send('|/cancelsearch');
+		twitchChat(`An error was encountered while attempting to ladder, please try another team.`);
 	}
 });
 
-Ps.on('error', (room, message, isIntro) => {
+Ps.on('chatError', (room, message, isIntro) => {
 	console.log(message);
 });
 
@@ -72,7 +78,7 @@ Ps.on('request', (room, request, isIntro) => {
 
 Ps.on('win', (room, request, isIntro) => {
 	session.leave();
-	// Ps.send(`|/leave ${room}`);
+	session = null;
 	if (laddering) {
 		Ps.send(`|/utm ${team}`);
 		Ps.send(`|/search ${format}`);
@@ -185,6 +191,15 @@ Twitch.on('message', (channel, tags, message, self) => {
 			}
 			twitchChat(`Team link: ${pokepaste}`);
 			break;
+		case 'code':
+		case 'git':
+		case 'github':
+			twitchChat(`We're open source, check us out: https://github.com/HisuianZoroark/TwitchPlaysPS`);
+			break;
+		case 'info':
+		case 'help':
+			twitchChat(`Command information: https://github.com/HisuianZoroark/TwitchPlaysPS#commands`);
+			break;
 		case 'pic':
 		case 'partnersincrime':
 			twitchChat(`Play Partners in Crime! https://spo.ink/svpartnersincrime`);
@@ -203,10 +218,9 @@ Twitch.on('message', (channel, tags, message, self) => {
 
 function makeDecision(message, room) {
 	try {
-		// console.log(room);
 		Ps.rooms.get(room).send(message);
 	} catch (e) {
-		console.log('room doesnt exist?');
+		console.log(e);
 	}
 }
 global.makeDecision = makeDecision;
