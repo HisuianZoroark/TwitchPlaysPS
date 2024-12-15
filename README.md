@@ -26,7 +26,7 @@ Prefix for the bot.
 How long a typical vote should last, in seconds.
 
 ### Inactivity Floor
-If you get too low on timer, then the inactivity floor is the when you reach this many seconds on the timer the bot will immediately call the vote and make a move.
+If you reach this many seconds on timer, then the bot will immediately call the vote and make a move.
 
 ### Latency Buffer
 Adds some time (in seconds) before a vote starts, this could be useful if your stream has some lag you need to account for.
