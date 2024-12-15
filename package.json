@@ -1,6 +1,6 @@
 {
   "name": "twitchplaysps",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Twitch application for Pokemon Showdown",
   "main": "bot.js",
   "scripts": {
