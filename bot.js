@@ -211,6 +211,7 @@ Twitch.on('message', (channel, tags, message, self) => {
 			}
 			process.exit();
 			break;
+		case 't':
 		case 'team':
 			if (!pokepaste) {
 				twitchChat(`There is no team link or this is a Random Battle.`);
