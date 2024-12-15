@@ -8,6 +8,7 @@ const Battle = require('./battle.js');
 const Dex = PokemonShowdown.Dex;
 const Teams = PokemonShowdown.Teams;
 let session;
+let startedVote;
 let laddering = false;
 let inBattle = false;
 let format;
@@ -65,17 +66,19 @@ Ps.on('request', (room, request, isIntro) => {
 		inBattle = true;
 	}
 	if (request.length) {
+		clearTimeout(startedVote);
 		if (!session.getTeam()) {
 			// todo: randbats
 		}
 		if (!session.waiting(request)) {
 			session.genOptions(request);
-			session.startVote();
+			startedVote = setTimeout(() => session.startVote(), Config.Settings.latencybuffer * 1000);
 		}
 	}
 });
 
 Ps.on('win', (room, request, isIntro) => {
+	clearTimeout(startedVote);
 	session.leave();
 	session = null;
 	if (laddering) {
@@ -105,12 +108,21 @@ Twitch.on('message', (channel, tags, message, self) => {
 	switch (command) {
 		case 'v':
 		case 'move':
+		case 'm':
 		case 'switch':
+		case 's':
 		case 'vote':
 			if (inBattle === false || !session) {
 				twitchChat(`${author} we aren't in a battle yet!`);
 				return;
 			}
+
+			if (command === 'm') {
+				command = 'move';
+			} else if (command === 's') {
+				command = 'switch';
+			}
+
 			if (command === 'move' || command === 'switch') {
 				content = command.concat(' ') + content;
 			}

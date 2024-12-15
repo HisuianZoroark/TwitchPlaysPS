@@ -12,7 +12,7 @@ class Battle {
 		this.tally = new Map();
 		this.votecmds = new Map();
 		this.acceptingVotes = false;
-		this.timeout = Config.Settings.voteduration;
+		this.firstTurnBonus = true;
 	}
 	genOptions(requestState) {
 		this.votecmds.clear();
@@ -76,15 +76,44 @@ class Battle {
 	}
 	startVote() {
 		this.tally.clear();
-		let cmdArray = [];
+		let moveArray = [];
+		let switchArray = [];
+		let canGimmick = false;
 		this.votecmds.forEach((value, key) => {
-			if (!key.match(/\s[\d]+(\stera)?$/)) cmdArray.push(key);
+			if (!key.match(/\s[\d]+(\stera)?$/)) {
+				if (key.startsWith('move ')) {
+					if (key.endsWith(' tera')) {
+						canGimmick = 'tera';
+					} else {
+						moveArray.push(key.replace('move ', ''));
+					}
+				} else if (key.startsWith('switch ')) {
+					switchArray.push(key.replace('switch ', ''))
+				}
+			}
 		});
-		twitchChat(`Starting vote! Use ${Config.Settings.prefix}vote to vote!`);
-		twitchChat(`Valid vote options: ${cmdArray.join(', ')}`);
-		twitchChat(`(You can also use the move or pokemon slot number instead)`);
+		twitchChat(`Starting vote!`);
+		if (Config.Settings.displayvalidoptions) {
+			if (moveArray.length > 0) {
+				twitchChat(`Use ${Config.Settings.prefix}move or ${Config.Settings.prefix}m to use a move. Valid moves: ${moveArray.join(', ')}`);
+				if (canGimmick === 'tera') {
+					twitchChat(`You can add tera or t (e.g. ${Config.Settings.prefix}move ${moveArray[0]} tera) to any move command to terastallize.`);
+				}
+			}
+			if (switchArray.length > 0) {
+				twitchChat(`Use ${Config.Settings.prefix}switch or ${Config.Settings.prefix}s make a switch. Valid switches: ${switchArray.join(', ')}`);
+			}
+		} else {
+			twitchChat(`Use ${Config.Settings.prefix}move or ${Config.Settings.prefix}m to use a move. Use ${Config.Settings.prefix}switch or ${Config.Settings.prefix}s make a switch. You can add tera or t to any move command to terastallize.`);
+		}
+		twitchChat(`You can also use the move or pokemon slot number instead (e.g. ${Config.Settings.prefix}move 1 or ${Config.Settings.prefix}switch 1).`);
 		this.acceptingVotes = true;
-		this.endVoting = setTimeout(() => this.endVote(), this.timeout * 1000);
+		let timeout = Config.Settings.voteduration;
+		if (this.firstTurnBonus) {
+			timeout += Config.Settings.firstturnbonustime;
+			this.firstTurnBonus = false;
+		}
+		this.endVoting = setTimeout(() => this.endVote(), timeout * 1000);
 	}
 	endVote() {
 		this.acceptingVotes = false;
@@ -115,7 +144,13 @@ class Battle {
 	}
 	async submitVote(username, vote) {
 		// console.log(vote);
-		let sanitizedvote = vote.toLowerCase().trim();
+		let sanitizedvote = vote.toLowerCase().trim().replace(/\s{2,}/g, ' ');
+		if (sanitizedvote.includes(',')) {
+			sanitizedvote = sanitizedvote.replace(',', '');
+		}
+		if (sanitizedvote.endsWith(' t')) {
+			sanitizedvote = sanitizedvote + 'era';
+		}
 		let realvote = this.votecmds.get(sanitizedvote) || null;
 		// console.log(this.votecmds.get(sanitizedvote));
 		if (!realvote || !this.acceptingVotes) {
