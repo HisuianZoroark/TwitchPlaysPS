@@ -45,7 +45,7 @@ Casts a vote for using a move. Can use a move and terastallize by adding either 
 ### vote switch [pokemon name or slot number] (Aliases: `switch` or `s`)
 Casts a vote for switching to a pokemon.
 
-### team
+### team (Aliases: `t`)
 Displays the team used for the ladder session, or the current team in a Random Battle.
 
 ### startladder [tier, pokepaste (optional)]
