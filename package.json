@@ -17,9 +17,10 @@
   },
   "homepage": "https://github.com/HisuianZoroark/TwitchPlaysPS#readme",
   "dependencies": {
+    "he": "^1.2.0",
     "node-fetch": "^2.7.0",
     "pokemon-showdown": "^0.11.9",
-    "ps-client": "^3.6.0",
+    "ps-client": "^3.8.2",
     "tmi.js": "^1.8.5"
   }
 }

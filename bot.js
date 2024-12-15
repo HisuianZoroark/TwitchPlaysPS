@@ -3,6 +3,7 @@ const Tmi = require('tmi.js');
 const PSClient = require('ps-client');
 const PokemonShowdown = require('pokemon-showdown');
 const Fetch = require('node-fetch');
+const He = require('he');
 global.Config = require('./config/config.js');
 const Battle = require('./battle.js');
 const Dex = PokemonShowdown.Dex;
@@ -25,14 +26,27 @@ const Ps = new PSClient.Client({
 
 Ps.connect();
 
-// Ps.on('message', message => {
-// 	if (message.isIntro) return;
-// 	//console.log(Ps.rooms);
-// 	if (message.content === '/challenge gen9randombattle|gen9randombattle|||') {
-// 		message.reply('/utm null');
-// 		message.reply('/accept');
-// 	}
-// });
+Ps.on('message', message => {
+	if (message.isIntro) return;
+	// Blame PartMan for this
+	if (message.raw.startsWith('|c|~|/raw <div class="infobox"><details><summary>View team</summary>')) {
+		let teamString = message.raw.match(/<\/summary>.*<\/details>/)[0] || null;
+		if (teamString) {
+			teamString = teamString.replace(/^<\/summary>/, '').replace(/<\/details>$/, '');
+			teamString = teamString.replace(/\s\s(<br \/>){2}/g, '  \n\n').replace(/\s\s(<br \/>)/g, '  \n');
+			teamString = He.decode(teamString);
+			PSClient.Tools.uploadToPokepaste(teamString).then((url) => {
+				console.log('Team obtained!');
+				pokepaste = url;
+				twitchChat(`Current Team: ${url}`);
+			});
+		}
+	}
+	// if (message.content === '/challenge gen9randombattle|gen9randombattle|||') {
+	// 	message.reply('/utm null');
+	// 	message.reply('/accept');
+	// }
+});
 
 Ps.on('popup', (room, message, isIntro) => {
 	if (message.startsWith(`Your team was rejected for the following reasons:`)) {
@@ -68,7 +82,7 @@ Ps.on('request', (room, request, isIntro) => {
 	if (request.length) {
 		clearTimeout(startedVote);
 		if (!session.getTeam()) {
-			// todo: randbats
+			makeDecision('/showteam', room);
 		}
 		if (!session.waiting(request)) {
 			session.genOptions(request);
