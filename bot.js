@@ -35,9 +35,11 @@ Ps.on('message', message => {
 			teamString = teamString.replace(/^<\/summary>/, '').replace(/<\/details>$/, '');
 			teamString = teamString.replace(/\s\s(<br \/>){2}/g, '  \n\n').replace(/\s\s(<br \/>)/g, '  \n');
 			teamString = He.decode(teamString);
+			teamString = teamString.trim();
 			PSClient.Tools.uploadToPokepaste(teamString).then((url) => {
 				console.log('Team obtained!');
 				pokepaste = url;
+				session.setTeam(Teams.pack(Teams.import(teamString)));
 				twitchChat(`Current Team: ${url}`);
 			});
 		}

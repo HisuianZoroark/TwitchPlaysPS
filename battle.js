@@ -169,8 +169,8 @@ class Battle {
 		clearTimeout(this.endVoting);
 		this.endVote();
 	}
-	setTeam(link) {
-		this.team = link;
+	setTeam(packedTeam) {
+		this.team = packedTeam;
 	}
 	getTeam() {
 		return this.team;
