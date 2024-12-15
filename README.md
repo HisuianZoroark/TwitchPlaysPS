@@ -3,7 +3,7 @@ This is a Twitch Bot with a PS client that allows you to cast votes to make a bo
 
 ## Installation
 You will need:
-* Node.js (v14.0.0 or higher)
+* Node.js (v16.0.0 or higher)
 * A Pokemon Showdown account for the bot
 * A Twitch account for the bot and its respective OAuth access token
 
@@ -15,25 +15,38 @@ run `npm install`
 
 run `node bot`
 
+**It is highly recommended to check the disable animations setting on Pokemon Showdown, as bots don't watch animations.**
+
+## Settings
+
+### Prefix
+Prefix for the bot.
+
+### Vote Duration
+How long a typical vote should last, in seconds.
+
+### Inactivity Floor
+If you reach this many seconds on timer, then the bot will immediately call the vote and make a move.
+
+### Latency Buffer
+Adds some time (in seconds) before a vote starts, this could be useful if your stream has some lag you need to account for.
+
+### First Turn Bonus Time
+Adds time (in seconds) to either team preview or the first turn of a match.
+
+### Display Valid Options
+Displays valid options to vote from in chat, can be very spammy.
+
 ## Commands
 
-### vote move [move name or slot number]
-Casts a vote for using a move
-### move [move name or slot number]
-Casts a vote for using a move
+### vote move [move name or slot number] (Aliases: `move` or `m`)
+Casts a vote for using a move. Can use a move and terastallize by adding either ` tera` or ` t` at the end.
 
-### vote move [move name or slot number] tera
-Casts a vote for using a move while terastallizing
-### move [move name or slot number] tera
-Casts a vote for using a move while terastallizing
-
-### vote switch [pokemon name or slot number]
-Casts a vote for switching to a pokemon.
-### switch [pokemon name or slot number]
+### vote switch [pokemon name or slot number] (Aliases: `switch` or `s`)
 Casts a vote for switching to a pokemon.
 
 ### team
-Displays the team used for the ladder session.
+Displays the team used for the ladder session. (Currently only works for teambuilderable formats)
 
 ### startladder [tier, pokepaste (optional)]
 Starts laddering in a tier with a pokepaste. you do not need a team for random formats.
@@ -42,7 +55,6 @@ Starts laddering in a tier with a pokepaste. you do not need a team for random f
 Stops laddering.
 
 ### kill
-
 Forces the bot offline
 
 ## Credits
