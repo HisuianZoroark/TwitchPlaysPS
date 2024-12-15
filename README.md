@@ -46,7 +46,7 @@ Casts a vote for using a move. Can use a move and terastallize by adding either 
 Casts a vote for switching to a pokemon.
 
 ### team
-Displays the team used for the ladder session. (Currently only works for teambuilderable formats)
+Displays the team used for the ladder session, or the current team in a Random Battle.
 
 ### startladder [tier, pokepaste (optional)]
 Starts laddering in a tier with a pokepaste. you do not need a team for random formats.
